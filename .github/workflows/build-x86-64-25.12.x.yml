@@ -146,7 +146,7 @@ jobs:
           tag_name: ${{ steps.release.outputs.tag }}
           name: ImmortalWrt ${{ steps.release.outputs.ver }} x86‑64 自动编译
           body: |
-            🕐 编译时间: ${{ steps.release.outputs.date }}
+            🕐 编译时间: ${{ steps.release.outputs.date }}  
             ## 📡 编译信息
             <a href="https://wkdaily.cpolar.cn/archives/1">
              <img src="https://img.shields.io/badge/若下载慢可套用国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge"/>
