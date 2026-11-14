@@ -1,5 +1,5 @@
 #!/bin/bash
-source shell/apk-custom-packages.sh
+source shell/wireless-apk-custom-packages.sh
 #echo "✅ 你选择了第三方软件包：$CUSTOM_PACKAGES"
 if [ -z "$CUSTOM_PACKAGES" ]; then
   echo "⚪️ 未选择 任何第三方软件包"
@@ -58,7 +58,7 @@ PACKAGES="$PACKAGES openssh-sftp-server"
 
 
 # 第三方软件包 合并
-# ======== shell/apk-custom-packages.sh =======
+# ======== shell/wireless-apk-custom-packages.sh =======
 PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
 
 
