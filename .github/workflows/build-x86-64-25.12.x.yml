@@ -129,27 +129,6 @@ jobs:
             -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
           immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
           
-
-      - name: Create info
-        run: |
-          cat > ${{ github.workspace }}/router-info.md <<EOF
-          ## 📡 路由器后台信息
-          <a href="https://wkdaily.cpolar.cn/archives/1">
-           <img src="https://img.shields.io/badge/若下载慢可套用国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge"/>
-          </a>
-          
-          - 🏠 **后台地址**: ${{ github.event.inputs.custom_router_ip }}
-          - 👤 **用户名**: root
-          - 🔑 **密码**: 无
-          EOF
-
-          if [ "${{ github.event.inputs.include_docker }}" == "yes" ]; then
-            extra_content="#### 默认带docker"
-            echo -e "\n$extra_content" >> ${{ github.workspace }}/router-info.md
-          else
-            echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
-          fi
-
       - name: Set release info
         id: release
         env:
@@ -167,13 +146,17 @@ jobs:
           tag_name: ${{ steps.release.outputs.tag }}
           name: ImmortalWrt ${{ steps.release.outputs.ver }} x86‑64 自动编译
           body: |
-            📦 ImmortalWrt ${{ steps.release.outputs.ver }} x86‑64 自动编译
             🕐 编译时间: ${{ steps.release.outputs.date }}
-
-            🐳 Docker: ${{ github.event.inputs.include_docker == 'yes' && '包含' || '不包含' }}
-            💾 软件包空间: ${{ github.event.inputs.profile }}
-            🏠 管理地址: ${{ github.event.inputs.custom_router_ip }}
-            🛒 Store商店: ${{ github.event.inputs.enable_store == 'true' && '已集成' || '未集成' }}
+            ## 📡 编译信息
+            <a href="https://wkdaily.cpolar.cn/archives/1">
+             <img src="https://img.shields.io/badge/若下载慢可套用国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge"/>
+            </a>
+            🐳 **Docker**: ${{ github.event.inputs.include_docker == 'yes' && '包含' || '不包含' }}
+            💾 **软件包空间**: ${{ github.event.inputs.profile }}
+            🏠 **管理地址**: ${{ github.event.inputs.custom_router_ip }}
+            👤 **用户名**: root
+            🔑 **密码**: 无
+            🛒 **Store商店**: ${{ github.event.inputs.enable_store == 'true' && '已集成' || '未集成' }}
 
           files: |
             ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
