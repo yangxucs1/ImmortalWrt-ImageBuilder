@@ -150,13 +150,36 @@ jobs:
             echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
           fi
 
-      - name: Upload ImmortWrt as release assets
+      - name: Set release info
+        id: release
+        env:
+          TZ: Asia/Shanghai
+          LUCI_VER: ${{ github.event.inputs.luci_version }}
+        run: |
+          echo "tag=Autobuild-x86-64-${LUCI_VER}-$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y-%m-%d %H:%M CST')" >> $GITHUB_OUTPUT
+          echo "ver=${LUCI_VER}" >> $GITHUB_OUTPUT
+
+      - name: Upload ImmortalWrt as release assets
         uses: softprops/action-gh-release@v3
+        if: success()
         with:
-          tag_name: Autobuild-x86-64
-          body_path: ${{ github.workspace }}/router-info.md
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: ImmortalWrt ${{ steps.release.outputs.ver }} x86‑64 自动编译
+          body: |
+            📦 ImmortalWrt ${{ steps.release.outputs.ver }} x86‑64 自动编译
+            🕐 编译时间: ${{ steps.release.outputs.date }}
+
+            🐳 Docker: ${{ github.event.inputs.include_docker == 'yes' && '包含' || '不包含' }}
+            💾 软件包空间: ${{ github.event.inputs.profile }}
+            🏠 管理地址: ${{ github.event.inputs.custom_router_ip }}
+            🛒 Store商店: ${{ github.event.inputs.enable_store == 'true' && '已集成' || '未集成' }}
+
           files: |
             ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
-          token: ${{ secrets.GITHUB_TOKEN }}
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.qcow2
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.vmdk
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.vdi
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.vhdx
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
